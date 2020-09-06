@@ -186,12 +186,6 @@ visit1 <- subset(df, VISIT == 1)
 visit1 <- visit1 %>% select(SUBJ, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
 visit1 <- rename(visit1, c("ADOS" = "ADOS1", "MullenRaw" = "MullenRaw1", "ExpressiveLangRaw" = "ExpressiveLangRaw1", "Socialization" = "Socialization1"))
 df <- merge(df, visit1)
-
-#df_2f <- df %>% select(SUBJ, VISIT, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
-#df_2f <- subset(df_2f, VISIT == 1)
-#df_2f <- df_2f %>% select(SUBJ, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
-#df_2f <- rename(df_2f, c("ADOS"="ADOS1", "MullenRaw"="MullenRaw1", "ExpressiveLangRaw"="ExpressiveLangRaw1", "Socialization"="Socialization1"))
-#df_merge <- merge(df, df_2f)
 ```
 
 2g. Final touches
