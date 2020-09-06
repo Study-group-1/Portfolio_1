@@ -207,20 +207,9 @@ Now we want to
 df$Gender <- ifelse(df$Gender == 1, "M", "F")
 df$Gender <- as.factor(df$Gender)
 
-df_merge$Gender <- as.character(df_merge$Gender)
-df_merge$Gender[df_merge$Gender == "1"] <- "M"
-df_merge$Gender[df_merge$Gender == "2"] <- "F"
-df_merge$Gender <- as.factor(df_merge$Gender)
-
 #Changing the values of Diagnosis from 'A' to 'ASD' and 'B' to 'TD'
-df$Diagnosis <- ifelse(df$Diagnosis=="A", "ASD", "TD")
+df$Diagnosis <- ifelse(df$Diagnosis == "A", "ASD", "TD")
 df$Diagnosis <-  as.factor(df$Diagnosis)
-
-
-df_merge$Diagnosis <- as.character(df_merge$Diagnosis)
-df_merge$Diagnosis[df_merge$Diagnosis == "A"] <- "ASD"
-df_merge$Diagnosis[df_merge$Diagnosis == "B"] <- "TD"
-df_merge$Diagnosis <- as.factor(df_merge$Diagnosis)
 
 #Another code to do the same as we did above 
 #df$Gender <- mapvalues(df$Gender, from = c("1", "2"), to = c("M", "F"))
