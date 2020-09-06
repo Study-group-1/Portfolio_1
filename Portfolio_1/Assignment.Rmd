@@ -166,8 +166,8 @@ Some things to pay attention to:
 * make sure to understand whether (and if so why) there are NAs in the dataset (e.g. some measures were not taken at all visits, some recordings were lost or permission to use was withdrawn)
 
 ```{r}
-df_first <- merge(demo1, LU1)
-df <- merge(df_first, token1)
+df <- merge(demo1, LU1)
+df <- merge(df, token1)
 ```
 
 
@@ -181,12 +181,17 @@ A possible way to do so:
 
 
 ```{r}
-df_2f <- df %>% select(SUBJ, VISIT, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
-df_2f <- subset(df_2f, VISIT == 1)
-df_2f <- df_2f %>% select(SUBJ, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
-df_2f <- rename(df_2f, c("ADOS"="ADOS1", "MullenRaw"="MullenRaw1", "ExpressiveLangRaw"="ExpressiveLangRaw1", "Socialization"="Socialization1"))
 
-df_merge <- merge(df, df_2f)
+visit1 <- subset(df, VISIT == 1)
+visit1 <- visit1 %>% select(SUBJ, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
+visit1 <- rename(visit1, c("ADOS" = "ADOS1", "MullenRaw" = "MullenRaw1", "ExpressiveLangRaw" = "ExpressiveLangRaw1", "Socialization" = "Socialization1"))
+df <- merge(df, visit1)
+
+#df_2f <- df %>% select(SUBJ, VISIT, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
+#df_2f <- subset(df_2f, VISIT == 1)
+#df_2f <- df_2f %>% select(SUBJ, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
+#df_2f <- rename(df_2f, c("ADOS"="ADOS1", "MullenRaw"="MullenRaw1", "ExpressiveLangRaw"="ExpressiveLangRaw1", "Socialization"="Socialization1"))
+#df_merge <- merge(df, df_2f)
 ```
 
 2g. Final touches
@@ -198,30 +203,33 @@ Now we want to
 
 ```{r}
 #Changing 1 and 2 in the Gender column to 'F' for Female and 'M' for Male
+
+df$Gender <- ifelse(df$Gender == 1, "M", "F")
+df$Gender <- as.factor(df$Gender)
+
 df_merge$Gender <- as.character(df_merge$Gender)
 df_merge$Gender[df_merge$Gender == "1"] <- "M"
 df_merge$Gender[df_merge$Gender == "2"] <- "F"
 df_merge$Gender <- as.factor(df_merge$Gender)
 
 #Changing the values of Diagnosis from 'A' to 'ASD' and 'B' to 'TD'
+df$Diagnosis <- ifelse(df$Diagnosis=="A", "ASD", "TD")
+df$Diagnosis <-  as.factor(df$Diagnosis)
+
+
 df_merge$Diagnosis <- as.character(df_merge$Diagnosis)
 df_merge$Diagnosis[df_merge$Diagnosis == "A"] <- "ASD"
 df_merge$Diagnosis[df_merge$Diagnosis == "B"] <- "TD"
 df_merge$Diagnosis <- as.factor(df_merge$Diagnosis)
 
 #Another code to do the same as we did above 
-#df_merge$Gender <- ifelse(df_merge$Gender==1, "F", "M")
-#df_merge$Gender <-  as.factor(df_merge$Gender)
-#df_merge$Diagnosis <- ifelse(df_merge$Diagnosis=="A", "ASD", "TD")
-#df_merge$Diagnosis <-  as.factor(df_merge$Diagnosis)
-
-      #Otherwise
-            #df_merge$Gender <- mapvalues(df_merge$Diagnosis, from = c("A", "B"), to = c("ASD", "TD"))
+#df$Gender <- mapvalues(df$Gender, from = c("1", "2"), to = c("M", "F"))
+#df$Diagnosis <-  mapvalues(df$Diagnosis, from = c("A", "B"), to = c("ASD", "TD"))
 
 #Changing name to anonymize participants
-df_merge$SUBJ <- as.factor(df_merge$SUBJ)
-df_merge$SUBJ <- as.numeric(df_merge$SUBJ)
-df_merge$SUBJ <- as.factor(df_merge$SUBJ)
+df$SUBJ <- as.factor(df$SUBJ)
+df$SUBJ <- as.numeric(df$SUBJ)
+df$SUBJ <- as.factor(df$SUBJ)
 ```
 
 
@@ -237,6 +245,7 @@ List all kids who:
 3. have not completed all trials. Tip: Use pipes to solve this
 
 ```{r}
+
 
 
 ```
