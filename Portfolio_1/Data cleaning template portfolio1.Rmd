@@ -1,0 +1,105 @@
+---
+title: "Port1"
+author: "Gustav Metzsch"
+date: "2/9/2020"
+output: html_document
+---
+
+```{r}
+pacman::p_load(tidyverse, psych, reshape2, caTools, caret)
+
+df_demo = read_csv('data/demo_train.csv')
+df_LU = read_csv('data/LU_train.csv')
+df_token = read_csv('data/token_train.csv')
+
+```
+
+
+2a
+```{r}
+#column names
+colnames(df_demo)
+?rename()
+df_demo <- df_demo %>% dplyr::rename(child_id = Child.ID, visit = Visit)
+df_LU <- df_LU %>% dplyr::rename(child_id = SUBJ, visit = VISIT)
+df_token <- df_token %>% dplyr::rename(child_id = SUBJ, visit = VISIT)
+
+```
+
+
+2b
+```{r}
+#Making the visit column from visit 1, visit 2, visit 3 etc. to 1, 2, 3. Functionen starter fra hver string.
+#?str_extract()
+pacman::p_load(stringr, plyr) #(this package fucks with the rename function)
+df_LU$visit <-  str_extract(df_LU$visit, "\\d")
+df_token$visit <-  str_extract(df_token$visit, "\\d")
+```
+
+
+2c
+```{r}
+#Removing all non letters and numbers
+df_LU$child_id <- str_remove_all(df_LU$child_id, "[.]")
+df_token$child_id <- str_remove_all(df_token$child_id, "[.]")
+df_demo$child_id <- str_remove_all(df_demo$child_id, "[.]")
+```
+
+
+2d, e
+```{r}
+#Choosing necessary variables
+
+df_token <- df_token %>% select(child_id, visit, types_MOT, types_CHI, tokens_MOT, tokens_CHI)
+df_LU <- select(df_LU, child_id, visit, MOT_MLU, CHI_MLU)
+df_demo <- select(df_demo, child_id, visit, Ethnicity, Diagnosis, Gender, Age, ADOS, Socialization, MullenRaw, ExpressiveLangRaw)
+
+df <- merge(df_token, df_LU, all=TRUE)
+df <- merge(df, df_demo, all = TRUE)
+```
+
+
+2f:
+```{r}
+#We want to have columns for ADOS, MullenRaw etc. which solely corresponds to the first day of visit. This is so we can compare our ability to predict based on solely one visit VS 6 visits.
+
+newdf <- df %>% select(child_id, visit, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
+newdf <- newdf %>% filter(visit == 1)
+newdf <- newdf %>% select(child_id, ADOS, MullenRaw, ExpressiveLangRaw, Socialization)
+newdf <- newdf %>% dplyr::rename(ADOS1 = ADOS, MullenRaw1 = MullenRaw, ExpressiveLangRaw1 = ExpressiveLangRaw, Socialization1 = Socialization)
+
+testdf <- merge(df, newdf, all=TRUE)
+df <- testdf
+remove(testdf)
+```
+
+
+2g:
+```{r}
+#Changing names of levels
+
+testdf <- df
+testdf$Gender <- as.character(df$Gender)
+testdf$Diagnosis <- as.character(df$Diagnosis)
+
+testdf$Gender <- mapvalues(testdf$Gender, from = c("1", "2"), to = c("m", "f"))
+testdf$Gender <- mapvalues(testdf$Diagnosis, from = c("A", "B"), to = c("ASD", "TD"))
+```
+
+2:
+```{r}
+#Anonymisering af child_id (lav navnene om til tal)
+testdf$child_id <- as.factor(testdf$child_id)
+testdf$child_id <- as.numeric(testdf$child_id)
+testdf$child_id <- as.factor(testdf$child_id)
+df <- testdf
+remove(testdf, df_demo, df_LU, df_token, newdf)
+write.csv(df, 'autisme')
+```
+
+
+```{r}
+autisme <- read_csv('autisme')
+
+```
+
