@@ -166,8 +166,8 @@ Some things to pay attention to:
 * make sure to understand whether (and if so why) there are NAs in the dataset (e.g. some measures were not taken at all visits, some recordings were lost or permission to use was withdrawn)
 
 ```{r}
-df <- merge(demo1, LU1)
-df <- merge(df, token1)
+df <- merge(demo1, LU1, all=T)
+df <- merge(df, token1, all=T)
 ```
 
 
@@ -213,6 +213,8 @@ df$Diagnosis <-  as.factor(df$Diagnosis)
 df$SUBJ <- as.factor(df$SUBJ)
 df$SUBJ <- as.numeric(df$SUBJ)
 df$SUBJ <- as.factor(df$SUBJ)
+
+write.csv(df, 'autisme')
 ```
 
 
