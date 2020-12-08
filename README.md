@@ -1,2 +1,2 @@
-# Portfolio_ExpMethods3
-Portfolio Assignments for Experimental Methods 3 - Cognitive Science Bachelor, Aarhus University
+# Portfolio 1 - Study group 1 
+Find the final file under the folder 'Portfolio 1' 
